@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright © 2015-2018 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2015-2019 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -31,7 +31,7 @@ fi
 log=$(mktemp -t pylint.XXXXXX)
 "$PYTHON" -m pylint "$@" > "$log" || [ $? != 1 ]
 ! grep -P '^\S+:' "$log" \
-| grep -v -P '^(?!lib/).*: missing-docstring ' \
+| grep -v -P '^(?!lib/).*: missing-(\w+-)?docstring ' \
 | grep '.' || exit 1
 rm "$log"
 

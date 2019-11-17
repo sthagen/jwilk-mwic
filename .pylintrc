@@ -5,10 +5,12 @@ load-plugins = pylint.extensions.check_elif
 disable =
     bad-builtin,
     bad-continuation,
+    bad-option-value,
     fixme,
     inconsistent-return-statements,
     invalid-name,
     locally-disabled,
+    no-else-continue,
     no-self-use,
     redefined-variable-type,
     similarities,
