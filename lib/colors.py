@@ -1,4 +1,4 @@
-# Copyright © 2015-2019 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2015-2022 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -55,8 +55,8 @@ def highlight(s, w):
             if cs < ' ' or cs == '\x7F':
                 cs = '^' + chr(ord(cs) ^ ord('@'))
             else:
-                cs = '<U+{0:04X}>'.format(ord(cs))
-            cs = '{t.reverse}{c}{t.unreverse}'.format(c=cs, t=_seq)
+                cs = f'<U+{ord(cs):04X}>'
+            cs = f'{_seq.reverse}{cs}{_seq.unreverse}'
         fp.write(cs)
     if old_color != off:
         fp.write(off)

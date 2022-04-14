@@ -1,4 +1,4 @@
-# Copyright © 2015-2018 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2015-2022 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -21,11 +21,11 @@
 import io
 import unittest.mock
 
-from nose.tools import (
+from lib import colors as M
+
+from .tools import (
     assert_equal,
 )
-
-from lib import colors as M
 
 def with_stdout(encoding):
     stdout = io.TextIOWrapper(

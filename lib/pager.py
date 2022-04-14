@@ -1,4 +1,4 @@
-# Copyright © 2015-2018 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2015-2021 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -61,8 +61,7 @@ def autopager(*, raw_control_chars=False):
         env = dict(env or os.environ, LV='-c')
     orig_stdout = sys.stdout
     try:
-        pager = ipc.Popen(cmdline, shell=True, stdin=ipc.PIPE, env=env)
-        try:
+        with ipc.Popen(cmdline, shell=True, stdin=ipc.PIPE, env=env) as pager:
             sys.stdout = io.TextIOWrapper(pager.stdin,
                 encoding=orig_stdout.encoding,
             )
@@ -70,8 +69,6 @@ def autopager(*, raw_control_chars=False):
                 yield
             finally:
                 sys.stdout.close()
-        finally:
-            pager.wait()
     finally:
         sys.stdout = orig_stdout
 

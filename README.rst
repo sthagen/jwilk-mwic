@@ -19,7 +19,7 @@ Prerequisites
 
 The following software is needed to run mwic:
 
-* Python ≥ 3.3;
+* Python ≥ 3.6;
 
 * PyEnchant_, Python bindings for the Enchant_ spellchecking system;
 
@@ -49,6 +49,6 @@ For Debian users::
 .. _Enchant:
    https://abiword.github.io/enchant/
 .. _docutils:
-   http://docutils.sourceforge.net/
+   https://docutils.sourceforge.io/
 
 .. vim:ts=3 sts=3 sw=3 ft=rst

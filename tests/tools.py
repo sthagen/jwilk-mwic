@@ -1,4 +1,4 @@
-# Copyright © 2014-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2022 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -18,45 +18,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import lib.text as M
+import unittest
 
-from .tools import (
-    assert_equal,
-    assert_greater_equal,
-)
+tc = unittest.TestCase('__hash__')
 
-def test_ltrim():
-    def t(s, n, expected):
-        result = M.ltrim(s, n)
-        assert_greater_equal(
-            max(1, n),
-            len(result)
-        )
-        assert_equal(result, expected)
-    truncations = [
-        '…',
-        '…',
-        '…s',
-        '…gs',
-        'eggs',
-        'eggs',
-    ]
-    for n, s in enumerate(truncations):
-        t(truncations[-1], n, s)
+assert_equal = tc.assertEqual
+assert_greater_equal = tc.assertGreaterEqual
+assert_in = tc.assertIn
+assert_is_instance = tc.assertIsInstance
+assert_multi_line_equal = tc.assertMultiLineEqual
+assert_not_equal = tc.assertNotEqual
+assert_not_in = tc.assertNotIn
 
-def test_rtrim():
-    def t(s, n, expected):
-        result = M.rtrim(s, n)
-        assert_equal(result, expected)
-    truncations = [
-        '…',
-        '…',
-        'e…',
-        'eg…',
-        'eggs',
-        'eggs',
-    ]
-    for n, s in enumerate(truncations):
-        t(truncations[-1], n, s)
+del tc
+
+assert_multi_line_equal.__self__.maxDiff = None  # pylint: disable=no-member
 
 # vim:ts=4 sts=4 sw=4 et

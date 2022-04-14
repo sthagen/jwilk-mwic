@@ -1,4 +1,4 @@
-# Copyright © 2013-2019 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2013-2022 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -54,9 +54,10 @@ class VersionAction(argparse.Action):
         )
 
     def __call__(self, parser, namespace, values, option_string=None):
-        print('{prog} {0}'.format(__version__, prog=parser.prog))
+        # pylint: disable=consider-using-f-string
+        print(f'{parser.prog} {__version__}')
         print('+ Python {0}.{1}.{2}'.format(*sys.version_info))
-        print('+ PyEnchant {0}'.format(__version__))
+        print(f'+ PyEnchant {enchant.__version__}')
         try:
             enchant_version = enchant.get_enchant_version()
         except AttributeError:
@@ -64,9 +65,9 @@ class VersionAction(argparse.Action):
         else:
             if isinstance(enchant_version, bytes):
                 enchant_version = enchant_version.decode('ASCII', 'replace')
-            print('  + Enchant {0}'.format(enchant_version))
+            print(f'  + Enchant {enchant_version}')
         regex = lib.intdict.re
-        print('+ regex {0}'.format(regex.__version__))  # pylint: disable=no-member
+        print(f'+ regex {regex.__version__}')  # pylint: disable=no-member
         parser.exit()
 
 def main():
@@ -127,7 +128,7 @@ def main():
         else:
             dictvars = vars(dictionary).items()
         for key, value in sorted(dictvars):
-            print('{k} = {v!r}'.format(k=key, v=value))
+            print(f'{key} = {value!r}')
         sys.exit(0)
     intdict = lib.intdict.Dictionary(options.language)
     extdict = lib.extdict.Dictionary(*options.blacklist)
@@ -155,7 +156,7 @@ def main():
             )
         else:
             try:
-                file = open(
+                file = open(  # pylint: disable=consider-using-with
                     path, 'rt',
                     encoding=encoding,
                     errors=enc_errors,
@@ -163,7 +164,7 @@ def main():
             except OSError as exc:
                 if options.traceback:
                     raise
-                msg = '{prog}: {path}: {exc}'.format(prog=ap.prog, path=path, exc=exc.strerror)
+                msg = f'{ap.prog}: {path}: {exc.strerror}'
                 print(msg, file=sys.stderr)
                 rc = 1
                 continue
@@ -235,7 +236,8 @@ def print_common_misspellings(ctxt):
         if options.suggest > 0:
             suggestions = ctxt.dictionary.suggest(word)[:options.suggest]
             if suggestions:
-                extra = ' ({sug})'.format(sug=', '.join(suggestions))
+                suggestions = str.join(', ', suggestions)
+                extra = f' ({suggestions})'
         print(word + extra + ':')
         highlight_color = 'error' if occurrences.certainty > 0 else 'warn'
         occurrences = [
@@ -257,11 +259,7 @@ def print_common_misspellings(ctxt):
                 print(lib.colors.dim('|'), end=' ')
             else:
                 print('|', end=' ')
-            print('{lc}{word}{rc}'.format(
-                lc=lcontext,
-                word=word,
-                rc=rcontext,
-            ))
+            print(f'{lcontext}{word}{rcontext}')
         if options.output_format != 'color':
             print('', ' ' * lwidth, '^' * len(word))
         if not options.compact:
@@ -284,7 +282,8 @@ def print_rare_misspellings(ctxt):
             if options.suggest > 0:
                 suggestions = ctxt.dictionary.suggest(word)[:options.suggest]
                 if suggestions:
-                    extra = ' ({sug})'.format(sug=', '.join(suggestions))
+                    suggestions = str.join(', ', suggestions)
+                    extra = f' ({suggestions})'
             header += [word + extra]
             for x in positions:
                 underline[x : x + len(word)] = underline_char * len(word)
@@ -321,7 +320,7 @@ def print_rare_misspellings(ctxt):
             print()
 
 class list_languages(argparse.Action):
-    def __call__(self, *args, **kwargs):  # pylint: disable=arguments-differ
+    def __call__(self, *args, **kwargs):  # pylint: disable=arguments-differ,signature-differs
         for lang in sorted(enchant.list_languages()):
             print(lang)
         sys.exit(0)

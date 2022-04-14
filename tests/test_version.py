@@ -1,4 +1,4 @@
-# Copyright © 2012-2015 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2012-2022 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -20,11 +20,11 @@
 
 import os
 
-from nose.tools import (
+from lib.cli import __version__
+
+from .tools import (
     assert_equal,
 )
-
-from lib.cli import __version__
 
 here = os.path.dirname(__file__)
 docdir = os.path.join(here, os.pardir, 'doc')
