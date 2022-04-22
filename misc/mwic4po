@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright © 2016 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2016-2022 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -22,15 +22,16 @@
 
 set -e -u
 
-prog=$(basename "$0")
+prog=${0##*/}
 if [ $# -ne 1 ]
 then
-    printf 'Usage: %s <pofile>\n' "$prog" >&2
+    printf 'Usage: %s PO-FILE\n' "$prog" >&2
     exit 1
 fi
 pofile="$1"
+exec 3<"$pofile"
 lang=$(
-    msggrep -K -e '^$' --force-po < "$pofile" \
+    msggrep -K -e '^$' --force-po <&3 \
     | msgexec cat \
     | sed -n -e 's/^Language: *//p'
 )
