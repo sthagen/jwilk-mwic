@@ -19,14 +19,17 @@ jobs:
         - python-version: '3.10'
           pytest: pytest
           os: ubuntu-22.04
-        - python-version: '3.11-dev'
+        - python-version: '3.11'
+          pytest: pytest
+          os: ubuntu-22.04
+        - python-version: '3.12-dev'
           pytest: pytest
           os: ubuntu-22.04
     runs-on: ${{matrix.os}}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: set up Python ${{matrix.python-version}}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{matrix.python-version}}
     - name: set up APT
@@ -66,7 +69,7 @@ jobs:
       run: |
         python3 -m pip install pyflakes
         python3 -m pyflakes .
-    - name: pip install nose
+    - name: pip install nose (for pylint)
       run: |
         # work-around for <https://github.com/nose-devs/nose/issues/1115>:
         pip install 'setuptools<58'
@@ -74,14 +77,10 @@ jobs:
         python3 -m pip install --no-binary ':all:' nose
         # work-around for <https://github.com/nose-devs/nose/issues/1116>:
         sed -i -e 's/ from unittest import _TextTestResult$/ from unittest import TextTestResult as _TextTestResult/' ${{env.pythonLocation}}/lib/python*/site-packages/nose/result.py
-      if:
-        matrix.python-version != '3.11-dev'
     - name: run pylint
       run: |
         python3 -m pip install pylint
         private/run-pylint
-      if:
-        matrix.python-version != '3.11-dev'
     - name: build docs
       run: |
         python3 -m pip install docutils
@@ -104,7 +103,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: check reST syntax
       run: |
         python3 -m pip install docutils pygments
