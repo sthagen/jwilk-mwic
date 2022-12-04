@@ -25,6 +25,7 @@ the command-line interface
 import argparse
 import functools
 import io
+import re
 import signal
 import sys
 import types
@@ -185,7 +186,7 @@ def spellcheck_file(ctxt, file):
     for line in file:
         if force_ucs2:
             # https://github.com/rfk/pyenchant/issues/58
-            line = ''.join(c if c <= '\uFFFF' else '\uFFFD' for c in line)
+            line = re.sub(r'[^\0-\uFFFF]', '\uFFFD', line)
         line = line.strip()
         line = line.expandtabs()
         taken = bytearray(len(line))
@@ -289,7 +290,7 @@ def print_rare_misspellings(ctxt):
                 underline[x : x + len(word)] = underline_char * len(word)
         if not header:
             continue
-        print(', '.join(header) + ':')
+        print(str.join(', ', header) + ':')
         underline = underline.decode()
         lwidth = len(underline) - len(underline.lstrip())
         rwidth = len(underline) - len(underline.rstrip())
