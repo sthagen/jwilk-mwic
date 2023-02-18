@@ -1,4 +1,4 @@
-# Copyright © 2014-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2014-2023 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -18,6 +18,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import re
+import sys
+
+import regex
+
 import lib.text as M
 
 from .tools import (
@@ -25,14 +30,29 @@ from .tools import (
     assert_greater_equal,
 )
 
+if sys.version_info >= (3, 7):
+    isascii = str.isascii  # pylint: disable=no-member
+else:
+    def isascii(s):
+        return re.fullmatch(r'[\0-\x7F]*', s) is not None
+
+def xlen(s):
+    n = sum(1 if c else 0 for c in regex.split(r'(\X)', s))
+    if isascii(s):
+        assert n == len(s)
+    else:
+        assert n <= len(s)
+    return n
+
 def test_ltrim():
     def t(s, n, expected):
         result = M.ltrim(s, n)
+        assert_equal(result, expected)
         assert_greater_equal(
             max(1, n),
-            len(result)
+            xlen(result)
         )
-        assert_equal(result, expected)
+    t('', 0, '')
     truncations = [
         '…',
         '…',
@@ -43,11 +63,22 @@ def test_ltrim():
     ]
     for n, s in enumerate(truncations):
         t(truncations[-1], n, s)
+    truncations = [
+        s.replace('g', 'g\N{COMBINING GRAVE ACCENT}')
+        for s in truncations
+    ]
+    for n, s in enumerate(truncations):
+        t(truncations[-1], n, s)
 
 def test_rtrim():
     def t(s, n, expected):
         result = M.rtrim(s, n)
         assert_equal(result, expected)
+        assert_greater_equal(
+            max(1, n),
+            xlen(result)
+        )
+    t('', 0, '')
     truncations = [
         '…',
         '…',
@@ -55,6 +86,12 @@ def test_rtrim():
         'eg…',
         'eggs',
         'eggs',
+    ]
+    for n, s in enumerate(truncations):
+        t(truncations[-1], n, s)
+    truncations = [
+        s.replace('g', 'g\N{COMBINING ACUTE ACCENT}')
+        for s in truncations
     ]
     for n, s in enumerate(truncations):
         t(truncations[-1], n, s)

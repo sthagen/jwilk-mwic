@@ -1,4 +1,4 @@
-# Copyright © 2014-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2014-2023 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -21,33 +21,53 @@
 import glob
 import io
 import os
+import random
+import signal
+import string
 import sys
 import unittest.mock
 
 import lib.cli as M
 
 from .tools import (
+    assert_in,
     assert_multi_line_equal,
 )
 
 here = os.path.dirname(__file__)
 here = os.path.relpath(here)
 
-def _get_output(path, language):
-    argv = ['mwic', '--language', language, path]
+def _get_output(*args, stdin=''):
+    argv = ['mwic', *args]
+    binstdin = io.BytesIO(stdin.encode('UTF-8'))
+    textstdin = io.TextIOWrapper(binstdin, encoding='UTF-8')
     binstdout = io.BytesIO()
     textstdout = io.TextIOWrapper(binstdout, encoding='UTF-8')
-    with unittest.mock.patch.multiple(sys, argv=argv, stdout=textstdout):
+    sys_patch = unittest.mock.patch.multiple(sys, argv=argv, stdin=textstdin, stdout=textstdout)
+    signal_patch = unittest.mock.patch('signal.signal')
+    with sys_patch, signal_patch:
         try:
             try:
                 M.main()
             except SystemExit as exc:
                 if exc.code != 0:
                     raise
+            signal.signal.assert_called_once()
             sys.stdout.flush()
             return binstdout.getvalue().decode('UTF-8')
         finally:
             textstdout.close()
+
+def random_word():
+    return str.join('', [
+        random.choice(string.ascii_lowercase)
+        for x in range(32)
+    ])
+
+def test_max_context_width():
+    bad_word = random_word()
+    text = _get_output('--language', 'en', '--max-context-width=2', stdin=f'yes {bad_word} yes')
+    assert_in(f'… {bad_word} …', text)
 
 def _test_text(xpath):
     assert xpath.endswith('.exp')
@@ -57,7 +77,7 @@ def _test_text(xpath):
         language = 'en-US'
         ipath = xpath[:-4]
     ipath += '.txt'
-    text = _get_output(ipath, language)
+    text = _get_output('--language', language, ipath)
     with open(xpath, 'rt', encoding='UTF-8') as file:
         expected = file.read()
     if expected != text:
