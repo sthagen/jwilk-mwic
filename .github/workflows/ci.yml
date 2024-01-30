@@ -20,14 +20,14 @@ jobs:
         - python-version: '3.11'
           pytest: pytest
           os: ubuntu-22.04
-        - python-version: '3.12-dev'
+        - python-version: '3.12'
           pytest: pytest
           os: ubuntu-22.04
     runs-on: ${{matrix.os}}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: set up Python ${{matrix.python-version}}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{matrix.python-version}}
     - name: set up APT
@@ -110,7 +110,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: check reST syntax
       run: |
         python3 -m pip install docutils pygments
