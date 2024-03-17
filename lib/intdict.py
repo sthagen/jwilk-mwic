@@ -1,4 +1,4 @@
-# Copyright © 2015-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2015-2024 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -38,7 +38,8 @@ datadir = os.path.join(basedir, 'dict', '')
 
 os.stat(datadir)
 
-def _find_nothing(s):  # pylint: disable=unused-argument
+def _find_nothing(s):
+    del s
     return ()
 
 class Macros():
