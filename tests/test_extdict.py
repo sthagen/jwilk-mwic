@@ -1,4 +1,4 @@
-# Copyright © 2016-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2016-2024 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -119,7 +119,7 @@ def test_kde():
     with tmpdict(kde_dict) as path:
         d = M.Dictionary(path)
     t = functools.partial(_test_dict, d=d)
-    t({'aasumes'}, {'assumes'})  # FIXME? 'assumes'
+    t({'aasumes'}, {'assumes'})
     t({'Addtional'}, {'Additional'})  # FIXME? 'addtional'
 
 plain_dict = '''\
