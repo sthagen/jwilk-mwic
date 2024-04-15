@@ -1,4 +1,4 @@
-# Copyright © 2015-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2015-2024 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -38,7 +38,7 @@ def with_stdout(encoding):
 def test_control_characters():
     def t(s, x):
         r = M.escape(s)
-        assert_equal(r, '\x1B[7m' + x + '\x1B[27m')
+        assert_equal(r, '\33[7m' + x + '\33[27m')
     t('\x00', '^@')
     t('\x01', '^A')
     t('\x02', '^B')

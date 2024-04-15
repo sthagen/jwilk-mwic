@@ -1,4 +1,4 @@
-# Copyright © 2015-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2015-2024 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -27,12 +27,12 @@ import itertools
 import unicodedata
 
 class _seq:
-    dim = '\x1B[90m'
-    off = '\x1B[0m'
-    warn = '\x1B[30;43m'
-    error = '\x1B[30;41m'
-    reverse = '\x1B[7m'
-    unreverse = '\x1B[27m'
+    dim = '\33[90m'
+    off = '\33[0m'
+    warn = '\33[30;43m'
+    error = '\33[30;41m'
+    reverse = '\33[7m'
+    unreverse = '\33[27m'
 
 def dim(s):
     return _seq.dim + escape(s) + _seq.off
