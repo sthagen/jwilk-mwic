@@ -1,4 +1,4 @@
-# Copyright © 2013-2023 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2013-2025 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -40,7 +40,6 @@ class lib:
     from . import intdict
     from . import pager
     from . import text
-    # pylint: enable=import-outside-toplevel
 
 __version__ = '0.7.11'
 
