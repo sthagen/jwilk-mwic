@@ -78,7 +78,54 @@ jobs:
       run: |
         python3 -m pip install pyflakes
         python3 -m pyflakes .
-    - name: pip install nose (for pylint)
+    - name: build docs
+      run: |
+        python3 -m pip install docutils
+        make -C doc
+    - name: install
+      run:
+        make install PREFIX=~/.local
+    - name: check if the executable was installed correctly
+      run: |
+        cd /
+        mwic --version
+        mwic < /dev/null
+    - name: check if the man page was installed correctly
+      env:
+        MANPATH: /home/runner/.local/share/man
+        MANWIDTH: 80
+      run: |
+        cd /
+        man 1 mwic | grep -A 10 -w MWIC
+
+  pylint:
+    strategy:
+      matrix:
+        include:
+        - python-version: '3.8'
+          os: ubuntu-22.04
+        - python-version: '3.9'
+          os: ubuntu-22.04
+        - python-version: '3.10'
+          os: ubuntu-22.04
+        - python-version: '3.11'
+          os: ubuntu-22.04
+        - python-version: '3.12'
+          os: ubuntu-22.04
+        - python-version: '3.13'
+          os: ubuntu-24.04
+    runs-on: ${{matrix.os}}
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up Python ${{matrix.python-version}}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{matrix.python-version}}
+    - name: pip install deps
+      run: |
+        python3 -m pip install pyenchant
+        python3 -m pip install regex
+    - name: pip install nose
       run: |
         # work-around for <https://github.com/nose-devs/nose/issues/1115>:
         python3 -m pip install 'setuptools<58'
@@ -90,25 +137,7 @@ jobs:
       run: |
         python3 -m pip install pylint
         private/run-pylint
-    - name: build docs
-      run: |
-        python3 -m pip install docutils
-        make -C doc
-    - name: install
-      run:
-        make install PREFIX=~/.local
-    - name: check whether the executable was installed correctly
-      run: |
-        cd /
-        mwic --version
-        mwic --help
-    - name: check whether the man page was installed correctly
-      env:
-        MANPATH: /home/runner/.local/share/man
-        MANWIDTH: 80
-      run: |
-        cd /
-        man 1 mwic | grep -A 10 -w MWIC
+
   docs:
     runs-on: ubuntu-latest
     steps:
