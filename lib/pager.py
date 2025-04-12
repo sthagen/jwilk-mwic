@@ -1,4 +1,4 @@
-# Copyright © 2015-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2015-2025 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -50,8 +50,10 @@ def autopager(*, raw_control_chars=False):
     if not sys.stdout.isatty():
         yield
         return
-    cmdline = os.environ.get('PAGER') or get_default_pager()
-    if cmdline == 'cat':
+    cmdline = os.environ.get('PAGER')
+    if cmdline is None:
+        cmdline = get_default_pager()
+    if cmdline in {'', 'cat'}:
         yield
         return
     env = None
