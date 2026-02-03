@@ -1,4 +1,4 @@
-# Copyright © 2013-2025 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2013-2026 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -73,6 +73,7 @@ class VersionAction(argparse.Action):
 def main():
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     ap = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    ap.color = False
     ap.add_argument('--version', action=VersionAction)
     ap.add_argument('files', metavar='FILE', nargs='*', default=['-'],
         help='file to process (default: stdin)')

@@ -1,4 +1,4 @@
-# Copyright © 2019-2022 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2019-2026 Jakub Wilk <jwilk@jwilk.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -34,6 +34,7 @@ def test_version_action():
     action = lib.cli.VersionAction(['--version'])
     stdout = io.StringIO()
     ap = argparse.ArgumentParser()
+    ap.color = False
     with unittest.mock.patch('sys.stdout', stdout):
         try:
             action(ap, None, None)
